@@ -1,12 +1,8 @@
-from Inventory import Inventory
-
-
 class Place:
 
     def __init__(self, name="Nowhere", description="There is not much to see here.", exits=None):
         self.name = name
         self.description = description
-        self.inventory = Inventory()
         self.exits = {} if exits is None else exits
         self.visited = False
 
