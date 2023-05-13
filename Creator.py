@@ -46,7 +46,9 @@ red ball under a table in the corner.""")
     garden.exits['shed'] = shed
     shed.exits['garden'] = garden
 
-    return Game(Player(start))
+    player = Player(start)
+    player.inventory.append('teapot')
+    return Game(player)
 
 
 class Ghost:
@@ -57,7 +59,7 @@ class Ghost:
             "*": """\
 You approach the ghost sat at the table. "Hello there. I'm not in the mood to
 talk to you. Someone's stolen my teapot! I can't even have a simple cup of tea
-these days...""",
+these days...\"""",
             "tea": """\
 I'm not in the mood to talk to you. Someone's stolen my teapot!""",
             "teapot": """\
@@ -70,7 +72,13 @@ Yes, my teapot has been stolen, I tell you!"""}
             self.chats = {
                 "*": "I'm so happy my teapot was recovered from the thieves!"
             }
+            print("""\
+"Ah, so you had my teapot! Well I'm glad to have it back." He moves throughout
+the kitchen, preparing a cup of tea. "I suppose I could find that key for you
+while we wait for the water to boil." He searches through a cluttered drawer,
+and takes out a small silver key. "Here ya go.\"""")
             return True
+        print("The ghost scowls. \"I don't want that! Where's my teapot?\"")
         return False
 
     def chat(self, topic):

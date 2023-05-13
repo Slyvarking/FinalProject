@@ -37,4 +37,9 @@ class Player:
             if words[-2:] != "to ghost".split():
                 print("Do you want to give something \"to ghost\"?")
             else:
-                self.location.npc.give(" ".join(words[1:-2]))
+                item = " ".join(words[1:-2])
+                if item in self.inventory:
+                    if self.location.npc.give(item):
+                        self.inventory.remove(item)
+                else:
+                    print(f"You don't have {item}.")
