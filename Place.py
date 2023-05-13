@@ -7,9 +7,9 @@ class Place:
         self.npc = None
         self.visited = False
 
-    def look(self):
+    def look(self, detail=True):
         print(self.name)
-        if not self.visited:
+        if not self.visited or detail:
             print(self.description)
         if self.exits:
             print("Obvious exits:", ", ".join(self.exits.keys()))
@@ -22,7 +22,7 @@ class Place:
     def move(self, direction):
         if direction in self.exits:
             destination = self.exits[direction]
-            destination.look()
+            destination.look(False)
             return destination
         else:
             return None

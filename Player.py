@@ -10,14 +10,31 @@ class Player:
         match words[0]:
             case "look" | "l":
                 self.location.look()
-            case "talk" | "chat" | "speak" | "say":
-                if self.location.npc:
-                    self.location.npc.chat(words[-1])
-                else:
-                    print("You mutter to yourself.")
+            case "talk":
+                self.talk(words)
+            case "give":
+                self.give(words)
             case _:
                 destination = self.location.move(words[0])
                 if not destination:
                     return False
                 self.location = destination
         return True
+
+    def talk(self, words):
+        if not self.location.npc:
+            print("You mutter to yourself.")
+        else:
+            if words[:4] != "talk to ghost about".split():
+                print("Do you want to \"talk to ghost about\" something?")
+            else:
+                self.location.npc.chat(" ".join(words[4:]))
+
+    def give(self, words):
+        if not self.location.npc:
+            print("Give what to whom?")
+        else:
+            if words[-2:] != "to ghost".split():
+                print("Do you want to give something \"to ghost\"?")
+            else:
+                self.location.npc.give(" ".join(words[1:-2]))

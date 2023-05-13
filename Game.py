@@ -28,12 +28,7 @@ class Game:
         words = command.lower().split()
         if not words:
             print("Type \"help\" for help.")
-            okay = True
-        elif 0 < len(words) < 5:
-            okay = self.player.handle(words)
-        else:
-            okay = False
-        if not okay:
+        elif not self.player.handle(words):
             print("What?")
 
     def help(self):
