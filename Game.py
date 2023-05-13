@@ -17,7 +17,7 @@ class Game:
                     self.save()
                 case "load":
                     return True
-                case "help":
+                case "help" | "h" | "?":
                     self.help()
                 case "quit" | "q":
                     return False
@@ -26,11 +26,14 @@ class Game:
 
     def handle(self, command):
         words = command.lower().split()
-        okay = False
-        if words:
+        print(len(words))
+        if not words:
             print("Type \"help\" for help.")
-        elif 1 < len(words) < 5:
+            okay = True
+        elif 0 < len(words) < 5:
             okay = self.player.handle(words)
+        else:
+            okay = False
         if not okay:
             print("What?")
 

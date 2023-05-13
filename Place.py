@@ -17,3 +17,10 @@ class Place:
             ", ".join(self.exits.keys())
         else:
             print("There are no obvious exits.")
+
+    def move(self, direction):
+        if direction in self.exits:
+            print("Move", direction)
+            return True
+        else:
+            return False

@@ -8,4 +8,11 @@ class Player:
         self.inventory = Inventory()
 
     def handle(self, words):
-        pass
+        match words[0]:
+            case "look" | "l":
+                self.location.look()
+            case _:
+                if self.location.move(words[0]):
+                    return True
+                return False
+        return True
