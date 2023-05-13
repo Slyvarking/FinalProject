@@ -24,6 +24,12 @@ hunched over a desk.""")
     left = Place("Left bedroom", """\
 You enter the room on the left; there's a large mess inside and a little boy
 ghost. He seems to be searching for something.""")
+    garden = Place("Garden", """\
+You emerge outside. There's a lovely garden filled with plants with a ghost
+lady tending to them. To the left, there's a small shed.""")
+    shed = Place("Shed", """\
+The shed is filled with various gardening tools, a watering can, and a small
+red ball under a table in the corner.""")
     start.exits['enter'] = living_room
     living_room.exits['kitchen'] = kitchen
     living_room.exits['hallway'] = hallway
@@ -33,4 +39,7 @@ ghost. He seems to be searching for something.""")
     hallway.exits['leave'] = living_room
     left.exits['out'] = hallway
     right.exits['out'] = hallway
+    garden.exits['inside'] = kitchen
+    garden.exits['shed'] = shed
+    shed.exits['garden'] = garden
     return Game(Player(start))
