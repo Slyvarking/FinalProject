@@ -4,6 +4,7 @@ class Place:
         self.name = name
         self.description = description
         self.exits = {} if exits is None else exits
+        self.npc = None
         self.visited = False
 
     def look(self):
@@ -14,6 +15,8 @@ class Place:
             print("Obvious exits:", ", ".join(self.exits.keys()))
         else:
             print("There are no obvious exits.")
+        if self.npc:
+            print(self.npc.name, "is here.")
         self.visited = True
 
     def move(self, direction):

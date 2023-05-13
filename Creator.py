@@ -1,3 +1,4 @@
+from NonPlayer import NonPlayer
 from Place import Place
 from Game import Game
 from Player import Player
@@ -16,6 +17,7 @@ hallway with two rooms.""")
     kitchen = Place("Kitchen", """\
 You enter the kitchen. Inside, you see a door, some cabinets, a stove, and...
 an annoyed looking ghost sitting at the table!""")
+    kitchen.npc = NonPlayer("A ghost")
     hallway = Place("Hallway", """\
 In the hallway, there are two rooms: one to the left and one to the right.""")
     right = Place("Right bedroom", """\
@@ -27,6 +29,7 @@ ghost. He seems to be searching for something.""")
     garden = Place("Garden", """\
 You emerge outside. There's a lovely garden filled with plants with a ghost
 lady tending to them. To the left, there's a small shed.""")
+    garden.npc = NonPlayer("A ghost lady")
     shed = Place("Shed", """\
 The shed is filled with various gardening tools, a watering can, and a small
 red ball under a table in the corner.""")
@@ -42,4 +45,5 @@ red ball under a table in the corner.""")
     garden.exits['inside'] = kitchen
     garden.exits['shed'] = shed
     shed.exits['garden'] = garden
+
     return Game(Player(start))
