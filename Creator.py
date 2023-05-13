@@ -17,7 +17,7 @@ hallway with two rooms.""")
     kitchen = Place("Kitchen", """\
 You enter the kitchen. Inside, you see a door, some cabinets, a stove, and...
 an annoyed looking ghost sitting at the table!""")
-    kitchen.npc = NonPlayer("A ghost")
+    kitchen.npc = Ghost()
     hallway = Place("Hallway", """\
 In the hallway, there are two rooms: one to the left and one to the right.""")
     right = Place("Right bedroom", """\
@@ -47,3 +47,34 @@ red ball under a table in the corner.""")
     shed.exits['garden'] = garden
 
     return Game(Player(start))
+
+
+class Ghost:
+    def __init__(self):
+        self.name = "A grouchy ghost"
+        self.description = "An annoyed looking ghost sitting at the table!"
+        self.chats = {
+            "*": """\
+You approach the ghost sat at the table. "Hello there. I'm not in the mood to
+talk to you. Someone's stolen my teapot! I can't even have a simple cup of tea
+these days...""",
+            "tea": """\
+I'm not in the mood to talk to you. Someone's stolen my teapot!""",
+            "teapot": """\
+Yes, my teapot has been stolen, I tell you!"""}
+
+    def give(self, item):
+        if item == "teapot":
+            self.name = "A contented ghost"
+            self.description = "A content ghost enjoying a cup of tea."
+            self.chats = {
+                "*": "I'm so happy my teapot was recovered from the thieves!"
+            }
+            return True
+        return False
+
+    def chat(self, topic):
+        if topic in self.chats:
+            print(self.chats[topic])
+        else:
+            print(self.chats['*'])

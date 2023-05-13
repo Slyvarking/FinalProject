@@ -10,10 +10,14 @@ class Player:
         match words[0]:
             case "look" | "l":
                 self.location.look()
+            case "talk" | "chat" | "speak" | "say":
+                if self.location.npc:
+                    self.location.npc.chat(words[-1])
+                else:
+                    print("You mutter to yourself.")
             case _:
                 destination = self.location.move(words[0])
-                if destination:
-                    self.location = destination
-                    return True
-                return False
+                if not destination:
+                    return False
+                self.location = destination
         return True
