@@ -3,8 +3,8 @@ from Place import Place
 
 
 class Player:
-    def __init__(self):
-        self.location = Place()
+    def __init__(self, location=Place()):
+        self.location = location
         self.inventory = Inventory()
 
     def handle(self, words):
@@ -12,7 +12,9 @@ class Player:
             case "look" | "l":
                 self.location.look()
             case _:
-                if self.location.move(words[0]):
+                destination = self.location.move(words[0])
+                if destination:
+                    self.location = destination
                     return True
                 return False
         return True

@@ -5,11 +5,11 @@ from Player import Player
 
 class Game:
 
-    def __init__(self):
-        self.player = Player()
-        self.places = {}
+    def __init__(self, player=Player()):
+        self.player = player
 
     def run(self):
+        self.player.location.look()
         while True:
             command = input("> ")
             match command:
@@ -26,7 +26,6 @@ class Game:
 
     def handle(self, command):
         words = command.lower().split()
-        print(len(words))
         if not words:
             print("Type \"help\" for help.")
             okay = True
