@@ -17,7 +17,12 @@ hallway with two rooms.""")
     kitchen = Place("Kitchen", """\
 You enter the kitchen. Inside, you see a door, some cabinets, a stove, and...
 an annoyed looking ghost sitting at the table!""")
-    kitchen.npc = Ghost()
+    kitchen.details['cabinets'] = """\
+The cabinets are completely empty except for a box of tea. Guess ghosts don't
+eat much."""
+    kitchen.details['door'] = """\
+You walk up to the door. According to the house's layout, it should lead
+outside into the yard. It's locked."""
     hallway = Place("Hallway", """\
 In the hallway, there are two rooms: one to the left and one to the right.""")
     right = Place("Right bedroom", """\
@@ -29,7 +34,6 @@ ghost. He seems to be searching for something.""")
     garden = Place("Garden", """\
 You emerge outside. There's a lovely garden filled with plants with a ghost
 lady tending to them. To the left, there's a small shed.""")
-    garden.npc = NonPlayer("A ghost lady")
     shed = Place("Shed", """\
 The shed is filled with various gardening tools, a watering can, and a small
 red ball under a table in the corner.""")
@@ -42,9 +46,10 @@ red ball under a table in the corner.""")
     hallway.exits['leave'] = living_room
     left.exits['out'] = hallway
     right.exits['out'] = hallway
-    garden.exits['inside'] = kitchen
     garden.exits['shed'] = shed
     shed.exits['garden'] = garden
+    garden.npc = NonPlayer("A ghost lady")
+    kitchen.npc = Ghost(kitchen, garden)
 
     player = Player(start)
     player.inventory.append('teapot')
@@ -52,34 +57,44 @@ red ball under a table in the corner.""")
 
 
 class Ghost(NonPlayer):
-    def __init__(self):
+    def __init__(self, kitchen, garden):
         super().__init__("A grouchy ghost")
+        self.kitchen = kitchen
+        self.garden = garden
         self.description = "An annoyed looking ghost sitting at the table!"
         self.chats = {
-            "_": """\
+            '_': """\
 You approach the ghost sat at the table. "Hello there. I'm not in the mood to
 talk to you. Someone's stolen my teapot! I can't even have a simple cup of tea
 these days...\"""",
-            "tea": """\
+            'door': """\
+Oh, that's the door out to the yard. I would unlock it for you if I had the
+bother to locate the key. Unfortunately for you, I do not.""",
+            'tea': """\
 I'm not in the mood to talk to you. Someone's stolen my teapot!""",
-            "teapot": """\
+            'teapot': """\
 Yes, my teapot has been stolen, I tell you!"""}
 
     def give(self, actor, item):
-        if item != "teapot":
+        if item != 'teapot':
             print("The ghost scowls. \"I don't want that! Where's my teapot?\"")
             return False
         self.name = "A contented ghost"
         self.description = "A content ghost enjoying a cup of tea."
         self.chats = {
-            "_": "I'm so happy my teapot was recovered from the thieves!"
+            'door': """\
+Oh, that's the door out to the yard. I would unlock it for you if I could.
+Unfortunately, someone has stolen the key!""",
+            '_': "I'm so happy my teapot was recovered from the thieves!"
         }
         print("""\
 "Ah, so you had my teapot! Well I'm glad to have it back." He moves throughout
 the kitchen, preparing a cup of tea. "I suppose I could find that key for you
 while we wait for the water to boil." He searches through a cluttered drawer,
 and takes out a small silver key. "Here ya go.\"""")
-        actor.inventory.append("key")
+        self.kitchen.exits['door'] = self.garden
+        self.garden.exits['house'] = self.kitchen
+        actor.inventory.append('key')
         return True
 
     def chat(self, actor, topic):

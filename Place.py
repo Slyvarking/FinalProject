@@ -1,10 +1,14 @@
+from typing import Dict, Any
+
+
 class Place:
 
-    def __init__(self, name="Nowhere", description="There is not much to see here.", exits=None):
+    def __init__(self, name="Nowhere", description="There is not much to see here."):
         self.name = name
         self.description = description
-        self.exits = {} if exits is None else exits
+        self.exits = {}
         self.npc = None
+        self.details = {}
         self.visited = False
 
     def handle(self, actor, command):
@@ -16,6 +20,8 @@ class Place:
                 self.talk(actor, command)
             case "give":
                 self.give(actor, command)
+            case "examine" | "exa":
+                self.examine(actor, command)
             case _:
                 if not self.move(actor, command):
                     return actor.handle(command)
@@ -45,6 +51,10 @@ class Place:
                         actor.inventory.remove(item)
                 else:
                     print(f"You don't have {item}.")
+
+    def examine(self, actor, command):
+        item = ' '.join(command.split()[1:])
+        print(self.details.get(item, f"You don't see {item} here."))
 
     def look(self, actor, detail=True):
         print(self.name)
