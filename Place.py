@@ -7,7 +7,46 @@ class Place:
         self.npc = None
         self.visited = False
 
-    def look(self, detail=True):
+    def handle(self, actor, command):
+        words = command.split(None, 1)
+        match words[0]:
+            case "look" | "l":
+                self.look(actor)
+            case "talk":
+                self.talk(actor, command)
+            case "give":
+                self.give(actor, command)
+            case _:
+                if not self.move(actor, command):
+                    return actor.handle(command)
+        return True
+
+    def talk(self, actor, command):
+        if not self.npc:
+            print("You mutter to yourself.")
+        else:
+            words = command.split()
+            if words[:4] != "talk to ghost about".split():
+                print("Do you want to \"talk to ghost about\" something?")
+            else:
+                self.npc.chat(actor, " ".join(words[4:]))
+
+    def give(self, actor, command):
+        if not self.npc:
+            print("Give what to whom?")
+        else:
+            words = command.split()
+            if words[-2:] != "to ghost".split():
+                print("Do you want to give something \"to ghost\"?")
+            else:
+                item = " ".join(words[1:-2])
+                if item in actor.inventory:
+                    if self.npc.give(actor, item):
+                        actor.inventory.remove(item)
+                else:
+                    print(f"You don't have {item}.")
+
+    def look(self, actor, detail=True):
         print(self.name)
         if not self.visited or detail:
             print(self.description)
@@ -19,10 +58,10 @@ class Place:
             print(self.npc.name, "is here.")
         self.visited = True
 
-    def move(self, direction):
-        if direction in self.exits:
-            destination = self.exits[direction]
-            destination.look(False)
-            return destination
-        else:
-            return None
+    def move(self, actor, direction):
+        if direction not in self.exits:
+            return False
+        destination = self.exits[direction]
+        actor.location = destination
+        destination.look(False)
+        return True

@@ -9,7 +9,7 @@ class Game:
         self.player = player
 
     def run(self):
-        self.player.location.look()
+        self.player.location.look(self.player)
         while True:
             command = input("> ")
             match command:
@@ -25,10 +25,9 @@ class Game:
                     self.handle(command)
 
     def handle(self, command):
-        words = command.lower().split()
-        if not words:
+        if not command:
             print("Type \"help\" for help.")
-        elif not self.player.handle(words):
+        elif not self.player.location.handle(self.player, command):
             print("What?")
 
     def help(self):
@@ -38,10 +37,8 @@ Game command:
     load <file> - load game from <file>
     help, h, ?  - print this help
     quit, q     - quit the game""")
-        return 1, False
 
     def save(self):
         with open("game.dat", "wb") as file:
             pickle.dump(self, file)
         print("Saved game in \"game.dat\"")
-        return 1, False

@@ -12,7 +12,7 @@ of them is to find out what problem is keeping them here and fix it so they can
 peacefully move on. You	may enter what will soon be your home... hopefully!""")
     living_room = Place("Living room", """\
 In the living room is some antique-looking decor, and a little ghostly dog
-sleeping on	an ornate rug. To your left is the kitchen, and ahead of you is a
+sleeping on an ornate rug. To your left is the kitchen, and ahead of you is a
 hallway with two rooms.""")
     kitchen = Place("Kitchen", """\
 You enter the kitchen. Inside, you see a door, some cabinets, a stove, and...
@@ -51,12 +51,12 @@ red ball under a table in the corner.""")
     return Game(player)
 
 
-class Ghost:
+class Ghost(NonPlayer):
     def __init__(self):
-        self.name = "A grouchy ghost"
+        super().__init__("A grouchy ghost")
         self.description = "An annoyed looking ghost sitting at the table!"
         self.chats = {
-            "*": """\
+            "_": """\
 You approach the ghost sat at the table. "Hello there. I'm not in the mood to
 talk to you. Someone's stolen my teapot! I can't even have a simple cup of tea
 these days...\"""",
@@ -65,24 +65,25 @@ I'm not in the mood to talk to you. Someone's stolen my teapot!""",
             "teapot": """\
 Yes, my teapot has been stolen, I tell you!"""}
 
-    def give(self, item):
-        if item == "teapot":
-            self.name = "A contented ghost"
-            self.description = "A content ghost enjoying a cup of tea."
-            self.chats = {
-                "*": "I'm so happy my teapot was recovered from the thieves!"
-            }
-            print("""\
+    def give(self, actor, item):
+        if item != "teapot":
+            print("The ghost scowls. \"I don't want that! Where's my teapot?\"")
+            return False
+        self.name = "A contented ghost"
+        self.description = "A content ghost enjoying a cup of tea."
+        self.chats = {
+            "_": "I'm so happy my teapot was recovered from the thieves!"
+        }
+        print("""\
 "Ah, so you had my teapot! Well I'm glad to have it back." He moves throughout
 the kitchen, preparing a cup of tea. "I suppose I could find that key for you
 while we wait for the water to boil." He searches through a cluttered drawer,
 and takes out a small silver key. "Here ya go.\"""")
-            return True
-        print("The ghost scowls. \"I don't want that! Where's my teapot?\"")
-        return False
+        actor.inventory.append("key")
+        return True
 
-    def chat(self, topic):
+    def chat(self, actor, topic):
         if topic in self.chats:
             print(self.chats[topic])
         else:
-            print(self.chats['*'])
+            print(self.chats['_'])
