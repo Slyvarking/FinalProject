@@ -5,11 +5,11 @@ from Player import Player
 
 class Game:
 
-    def __init__(self):
-        self.player = Player()
-        self.places = {}
+    def __init__(self, player=Player()):
+        self.player = player
 
     def run(self):
+        self.player.location.look(self.player)
         while True:
             command = input("> ")
             match command:
@@ -25,16 +25,9 @@ class Game:
                     self.handle(command)
 
     def handle(self, command):
-        words = command.lower().split()
-        print(len(words))
-        if not words:
+        if not command:
             print("Type \"help\" for help.")
-            okay = True
-        elif 0 < len(words) < 5:
-            okay = self.player.handle(words)
-        else:
-            okay = False
-        if not okay:
+        elif not self.player.location.handle(self.player, command):
             print("What?")
 
     def help(self):
@@ -44,10 +37,8 @@ Game command:
     load <file> - load game from <file>
     help, h, ?  - print this help
     quit, q     - quit the game""")
-        return 1, False
 
     def save(self):
         with open("game.dat", "wb") as file:
             pickle.dump(self, file)
         print("Saved game in \"game.dat\"")
-        return 1, False

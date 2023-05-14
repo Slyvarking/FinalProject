@@ -1,26 +1,67 @@
-from Inventory import Inventory
-
-
 class Place:
 
-    def __init__(self):
-        self.name = "Nowhere"
-        self.description = "There is not much to see here."
-        self.inventory = Inventory()
-        self.exits = {}
+    def __init__(self, name="Nowhere", description="There is not much to see here.", exits=None):
+        self.name = name
+        self.description = description
+        self.exits = {} if exits is None else exits
+        self.npc = None
+        self.visited = False
 
-    def look(self):
+    def handle(self, actor, command):
+        words = command.split(None, 1)
+        match words[0]:
+            case "look" | "l":
+                self.look(actor)
+            case "talk":
+                self.talk(actor, command)
+            case "give":
+                self.give(actor, command)
+            case _:
+                if not self.move(actor, command):
+                    return actor.handle(command)
+        return True
+
+    def talk(self, actor, command):
+        if not self.npc:
+            print("You mutter to yourself.")
+        else:
+            words = command.split()
+            if words[:4] != "talk to ghost about".split():
+                print("Do you want to \"talk to ghost about\" something?")
+            else:
+                self.npc.chat(actor, " ".join(words[4:]))
+
+    def give(self, actor, command):
+        if not self.npc:
+            print("Give what to whom?")
+        else:
+            words = command.split()
+            if words[-2:] != "to ghost".split():
+                print("Do you want to give something \"to ghost\"?")
+            else:
+                item = " ".join(words[1:-2])
+                if item in actor.inventory:
+                    if self.npc.give(actor, item):
+                        actor.inventory.remove(item)
+                else:
+                    print(f"You don't have {item}.")
+
+    def look(self, actor, detail=True):
         print(self.name)
-        print(self.description)
+        if not self.visited or detail:
+            print(self.description)
         if self.exits:
-            print("Obvious exits:")
-            ", ".join(self.exits.keys())
+            print("Obvious exits:", ", ".join(self.exits.keys()))
         else:
             print("There are no obvious exits.")
+        if self.npc:
+            print(self.npc.name, "is here.")
+        self.visited = True
 
-    def move(self, direction):
-        if direction in self.exits:
-            print("Move", direction)
-            return True
-        else:
+    def move(self, actor, direction):
+        if direction not in self.exits:
             return False
+        destination = self.exits[direction]
+        actor.location = destination
+        destination.look(False)
+        return True

@@ -1,8 +1,8 @@
-from Game import Game
+from Creator import create
 import pickle
 
 if __name__ == '__main__':
-    game = Game()
+    game = create()
     while True:
         if game.run():
             try:
