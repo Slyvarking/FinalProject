@@ -1,3 +1,4 @@
+from Item import Item
 from NonPlayer import NonPlayer
 from Place import Place
 from Game import Game
@@ -37,6 +38,9 @@ lady tending to them. To the left, there's a small shed.""")
     shed = Place("Shed", """\
 The shed is filled with various gardening tools, a watering can, and a stack of
 empty flower pots under a table in the corner.""")
+    can = Item("a watering can", ['watering can', 'can'], "A watering can")
+    can.hidden = True
+    shed.inventory.append(can)
     start.exits['enter'] = living_room
     living_room.exits['kitchen'] = kitchen
     living_room.exits['hallway'] = hallway
@@ -52,7 +56,7 @@ empty flower pots under a table in the corner.""")
     kitchen.npc = Ghost(kitchen, garden)
 
     player = Player(start)
-    player.inventory.append('teapot')
+    player.inventory.append(Item("a teapot", ['teapot'], "A china teapot"))
     return Game(player)
 
 
@@ -62,31 +66,24 @@ class Ghost(NonPlayer):
         self.kitchen = kitchen
         self.garden = garden
         self.description = "An annoyed looking ghost sitting at the table!"
-        self.chats = {
-            '_': """\
+        self.chats = {'_': """\
 You approach the ghost sat at the table. "Hello there. I'm not in the mood to
 talk to you. Someone's stolen my teapot! I can't even have a simple cup of tea
-these days...\"""",
-            'door': """\
+these days...\"""", 'door': """\
 Oh, that's the door out to the yard. I would unlock it for you if I had the
-bother to locate the key. Unfortunately for you, I do not.""",
-            'tea': """\
-I'm not in the mood to talk to you. Someone's stolen my teapot!""",
-            'teapot': """\
+bother to locate the key. Unfortunately for you, I do not.""", 'tea': """\
+I'm not in the mood to talk to you. Someone's stolen my teapot!""", 'teapot': """\
 Yes, my teapot has been stolen, I tell you!"""}
 
-    def give(self, actor, item):
-        if item != 'teapot':
+    def give(self, actor, obj):
+        if not obj.match_id('teapot'):
             print("The ghost scowls. \"I don't want that! Where's my teapot?\"")
             return False
         self.name = "A contented ghost"
         self.description = "A content ghost enjoying a cup of tea."
-        self.chats = {
-            'door': """\
+        self.chats = {'door': """\
 Oh, that's the door out to the yard. I would unlock it for you if I could.
-Unfortunately, someone has stolen the key!""",
-            '_': "I'm so happy my teapot was recovered from the thieves!"
-        }
+Unfortunately, someone has stolen the key!""", '_': "I'm so happy my teapot was recovered from the thieves!"}
         self.kitchen.details['door'] = """\
 According to the house's layout, this door should lead outside into the yard.
 You can open it with the key."""
@@ -97,7 +94,7 @@ You can open it with the key."""
 the kitchen, preparing a cup of tea. "I suppose I could find that key for you
 while we wait for the water to boil." He searches through a cluttered drawer,
 and takes out a small silver key. "Here ya go.\"""")
-        actor.inventory.append('key')
+        actor.inventory.append(Item("a silver key", ['key', 'silver key'], "A silver key"))
         return True
 
 
@@ -110,8 +107,8 @@ You approach the gardening ghost. "Oh, hello there. D'ya think you could grab
 the watering can? It's just over there in the shed. Thanks.\""""
         self.chats = {'_': "Healthy plants need plenty of water!"}
 
-    def give(self, actor, item):
-        if item != 'watering can':
+    def give(self, actor, obj):
+        if not obj.match_id('watering can'):
             print("Thank you, but I'm sure you need that more than I.")
             return False
         self.description = "A ghostly lady tending her garden."
@@ -120,4 +117,5 @@ the watering can? It's just over there in the shed. Thanks.\""""
 
 "Wait a moment...\" The gardener peers into the watering can. "What is this
 ball doing in the watering can?\"""")
-        actor.inventory.append('ball')
+        actor.inventory.append(Item("a red ball", ['red ball', 'ball'], "A chewed up red rubber ball"))
+        return True

@@ -1,9 +1,10 @@
-class NonPlayer:
-    def __init__(self, name, ids):
-        self.name = name
+from Item import Item
+
+
+class NonPlayer(Item):
+    def __init__(self, name, ids, description="What a character!"):
+        super().__init__(name, ids, description)
         self.chats = {'_': "They have nothing to say to that."}
-        self.ids = ids
-        self.description = "What a character!"
 
     def match_id(self, name):
         return name == self.name.lower() or name in self.ids
