@@ -48,7 +48,7 @@ red ball under a table in the corner.""")
     right.exits['out'] = hallway
     garden.exits['shed'] = shed
     shed.exits['garden'] = garden
-    garden.npc = NonPlayer("A ghost lady")
+    garden.npc = NonPlayer("A ghost lady", ['ghost', 'ghost lady', 'lady'])
     kitchen.npc = Ghost(kitchen, garden)
 
     player = Player(start)
@@ -58,7 +58,7 @@ red ball under a table in the corner.""")
 
 class Ghost(NonPlayer):
     def __init__(self, kitchen, garden):
-        super().__init__("A grouchy ghost")
+        super().__init__("A grouchy ghost", ['ghost', 'grouch'])
         self.kitchen = kitchen
         self.garden = garden
         self.description = "An annoyed looking ghost sitting at the table!"
@@ -96,9 +96,3 @@ and takes out a small silver key. "Here ya go.\"""")
         self.garden.exits['house'] = self.kitchen
         actor.inventory.append('key')
         return True
-
-    def chat(self, actor, topic):
-        if topic in self.chats:
-            print(self.chats[topic])
-        else:
-            print(self.chats['_'])

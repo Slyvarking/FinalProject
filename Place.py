@@ -1,6 +1,3 @@
-from typing import Dict, Any
-
-
 class Place:
 
     def __init__(self, name="Nowhere", description="There is not much to see here."):
@@ -9,6 +6,7 @@ class Place:
         self.exits = {}
         self.npc = None
         self.details = {}
+        self.inventory = []
         self.visited = False
 
     def handle(self, actor, command):
@@ -54,7 +52,14 @@ class Place:
 
     def examine(self, actor, command):
         item = ' '.join(command.split()[1:])
-        print(self.details.get(item, f"You don't see {item} here."))
+        if self.npc and self.npc.match_id(item):
+            print(self.npc.description)
+        else:
+            for obj in self.inventory:
+                if obj.match_id(item):
+                    print(obj.description)
+            else:
+                print(self.details.get(item, f"You don't see {item} here."))
 
     def look(self, actor, detail=True):
         print(self.name)
