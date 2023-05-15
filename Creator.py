@@ -35,8 +35,8 @@ ghost. He seems to be searching for something.""")
 You emerge outside. There's a lovely garden filled with plants with a ghost
 lady tending to them. To the left, there's a small shed.""")
     shed = Place("Shed", """\
-The shed is filled with various gardening tools, a watering can, and a small
-red ball under a table in the corner.""")
+The shed is filled with various gardening tools, a watering can, and a stack of
+empty flower pots under a table in the corner.""")
     start.exits['enter'] = living_room
     living_room.exits['kitchen'] = kitchen
     living_room.exits['hallway'] = hallway
@@ -48,7 +48,7 @@ red ball under a table in the corner.""")
     right.exits['out'] = hallway
     garden.exits['shed'] = shed
     shed.exits['garden'] = garden
-    garden.npc = NonPlayer("A ghost lady", ['ghost', 'ghost lady', 'lady'])
+    garden.npc = GhostLady()
     kitchen.npc = Ghost(kitchen, garden)
 
     player = Player(start)
@@ -87,12 +87,37 @@ Oh, that's the door out to the yard. I would unlock it for you if I could.
 Unfortunately, someone has stolen the key!""",
             '_': "I'm so happy my teapot was recovered from the thieves!"
         }
+        self.kitchen.details['door'] = """\
+According to the house's layout, this door should lead outside into the yard.
+You can open it with the key."""
+        self.kitchen.exits['door'] = self.garden
+        self.garden.exits['house'] = self.kitchen
         print("""\
 "Ah, so you had my teapot! Well I'm glad to have it back." He moves throughout
 the kitchen, preparing a cup of tea. "I suppose I could find that key for you
 while we wait for the water to boil." He searches through a cluttered drawer,
 and takes out a small silver key. "Here ya go.\"""")
-        self.kitchen.exits['door'] = self.garden
-        self.garden.exits['house'] = self.kitchen
         actor.inventory.append('key')
         return True
+
+
+class GhostLady(NonPlayer):
+
+    def __init__(self):
+        super().__init__("A ghost lady", ['ghost', 'ghost lady', 'lady'])
+        self.description = """\
+You approach the gardening ghost. "Oh, hello there. D'ya think you could grab
+the watering can? It's just over there in the shed. Thanks.\""""
+        self.chats = {'_': "Healthy plants need plenty of water!"}
+
+    def give(self, actor, item):
+        if item != 'watering can':
+            print("Thank you, but I'm sure you need that more than I.")
+            return False
+        self.description = "A ghostly lady tending her garden."
+        print("""\
+"Thank you. That's just what I needed!"
+
+"Wait a moment...\" The gardener peers into the watering can. "What is this
+ball doing in the watering can?\"""")
+        actor.inventory.append('ball')
