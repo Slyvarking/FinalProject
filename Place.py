@@ -59,6 +59,7 @@ class Place:
         item = ' '.join(command.split()[1:])
         for obj in self.inventory:
             if obj.match_id(item):
+                obj.hidden = False
                 self.inventory.remove(obj)
                 actor.inventory.append(obj)
                 print("You take", obj.name)

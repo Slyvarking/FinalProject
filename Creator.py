@@ -83,7 +83,8 @@ Yes, my teapot has been stolen, I tell you!"""}
         self.description = "A content ghost enjoying a cup of tea."
         self.chats = {'door': """\
 Oh, that's the door out to the yard. I would unlock it for you if I could.
-Unfortunately, someone has stolen the key!""", '_': "I'm so happy my teapot was recovered from the thieves!"}
+Unfortunately, someone has stolen the key!""",
+                      '_': "I'm so happy my teapot was recovered from the thieves!"}
         self.kitchen.details['door'] = """\
 According to the house's layout, this door should lead outside into the yard.
 You can open it with the key."""
@@ -118,4 +119,21 @@ the watering can? It's just over there in the shed. Thanks.\""""
 "Wait a moment...\" The gardener peers into the watering can. "What is this
 ball doing in the watering can?\"""")
         actor.inventory.append(Item("a red ball", ['red ball', 'ball'], "A chewed up red rubber ball"))
+        return True
+
+
+class Dog(NonPlayer):
+    def __init__(self):
+        super().__init__("A ghost dog", ['ghost dog', 'dog', 'puppy', 'pup'])
+        self.description = """\
+The ghost puppy wakes up and stares at you as you come closer.
+
+"Bark!\""""
+
+    def give(self, actor, obj):
+        if not obj.match_id('ball'):
+            print("The puppy whimpers and his tail droops sadly.")
+            return False
+        self.description = "The puppy is happily gnawing on a red rubber ball."
+        print("The puppy jumps up excitedly and takes the ball. It seems very happy.")
         return True
